@@ -1,7 +1,4 @@
-import { useState } from 'react';
-import ClassCounter from './Component/ClassCounter';
-import Count from './Component/Count';
-import PostItem from './Component/PostItem';
+import { useState, useRef } from 'react';
 import PostList from './Component/PostList';
 import MyButton from './Component/UI/button/MyButton';
 import MyInput from './Component/UI/input/MyInput';
@@ -14,16 +11,40 @@ function App() {
     {id: 3, title: 'Javascript 2', body: 'Description'},
   ])
 
+  const [title, setTitle] = useState('');
+  
+  // Получаем ДОМ элемента и забираем у ДОМ элемента value.
+  const bodyInputRef = useRef();
+
+  const addNewPost = (e: any) => {
+    e.preventDefault();
+    console.log(title);
+    console.log(bodyInputRef.current.value)
+  };
+
   return(
     <div className="App">
       <form>
-        <MyInput type="text" placeholder="Название поста" />
-        <MyInput type="text" placeholder="Описание поста" />
-        <MyButton disabled>Создать пост</MyButton>
+        {/* Управляемый компонент */}
+        <MyInput 
+          value={title}
+          onChange={(e: any) => setTitle(e.target.value)}
+          type="text" 
+          placeholder="Название поста" 
+        />
+
+        {/* Неуправляемый\Неконтролируемый компонент */}
+        <MyInput
+          ref={bodyInputRef}
+          type="text" 
+          placeholder="Описание поста" 
+        />
+
+        <MyButton onClick={addNewPost}>Создать пост</MyButton>
       </form>
       <PostList posts={posts} title='Посты про JS' />
     </div>
   );
-}
+};
 
 export default App;
