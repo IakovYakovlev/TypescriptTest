@@ -11,24 +11,17 @@ function App() {
     {id: 3, title: 'Javascript 2', body: 'Description'},
   ])
 
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
+  const [post, setPost] = useState({title: '', body: ''});
 
   const addNewPost = (e: any) => {
     e.preventDefault();
-    const newPost = {
-      id: Date.now(),
-      title,
-      body
-    };
 
     // Разворачиваем старый массив(с уже существующими постами) и 
     // в конец добавляем новый пост. 
-    setPosts([...posts, newPost]);
+    setPosts([...posts, {...post, id: Date.now()}]);
     
     // Обнуляем импуты
-    setTitle('');
-    setBody('');
+    setPost({title: '', body: ''})
   };
 
   return(
@@ -36,16 +29,16 @@ function App() {
       <form>
         {/* Управляемый компонент */}
         <MyInput 
-          value={title}
-          onChange={(e: any) => setTitle(e.target.value)}
+          value={post.title}
+          onChange={(e: any) => setPost({...post, title: e.target.value})}
           type="text" 
           placeholder="Название поста" 
         />
 
         {/* Управляемый компонент */}
         <MyInput
-          value={body}
-          onChange={(e: any) => setBody(e.target.value)}
+          value={post.body}
+          onChange={(e: any) => setPost({...post, body: e.target.value})}
           type="text" 
           placeholder="Описание поста" 
         />
