@@ -12,14 +12,23 @@ function App() {
   ])
 
   const [title, setTitle] = useState('');
-  
-  // Получаем ДОМ элемента и забираем у ДОМ элемента value.
-  const bodyInputRef = useRef();
+  const [body, setBody] = useState('');
 
   const addNewPost = (e: any) => {
     e.preventDefault();
-    console.log(title);
-    console.log(bodyInputRef.current.value)
+    const newPost = {
+      id: Date.now(),
+      title,
+      body
+    };
+
+    // Разворачиваем старый массив(с уже существующими постами) и 
+    // в конец добавляем новый пост. 
+    setPosts([...posts, newPost]);
+    
+    // Обнуляем импуты
+    setTitle('');
+    setBody('');
   };
 
   return(
@@ -33,9 +42,10 @@ function App() {
           placeholder="Название поста" 
         />
 
-        {/* Неуправляемый\Неконтролируемый компонент */}
+        {/* Управляемый компонент */}
         <MyInput
-          ref={bodyInputRef}
+          value={body}
+          onChange={(e: any) => setBody(e.target.value)}
           type="text" 
           placeholder="Описание поста" 
         />
