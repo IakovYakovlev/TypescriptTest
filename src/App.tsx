@@ -4,6 +4,7 @@ import PostForm from './Component/PostForm';
 import PostList from './Component/PostList';
 import MyButton from './Component/UI/button/MyButton';
 import MyInput from './Component/UI/input/MyInput';
+import MyModal from './Component/UI/MyModal/MyModal';
 import MySelect from './Component/UI/select/MySelect';
 import './styles/App.css';
 
@@ -15,6 +16,8 @@ function App() {
   ])
 
   const [filter, setFilter] = useState({ sort: '', query: ''})
+  const [modal, setModal] = useState(false);
+
 
   const sortedPosts = useMemo(() => {
     console.log('ОТРАБОТАЛА ФУНКЦИЯ СОРТЕД ПОСТОВ')
@@ -31,6 +34,7 @@ function App() {
 
   const createPost = (newPost: any) => {
     setPosts([...posts, newPost]);
+    setModal(false);
   }
 
   // Получаем post из дочернего компонента
@@ -40,7 +44,10 @@ function App() {
 
   return(
     <div className="App">
-      <PostForm create={createPost}/>
+      <MyButton style={{marginTop: 30}} onClick={() => setModal(true)}>Создать пользователя</MyButton>
+      <MyModal visible={modal} setVisible={setModal}>
+        <PostForm create={createPost}/>
+      </MyModal>
       {/* Отделяем форму от выпадающего списка */}
       <hr style={{margin: '15px 0'}} />
       <PostFilter
