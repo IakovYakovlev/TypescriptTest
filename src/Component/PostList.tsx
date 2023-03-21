@@ -29,7 +29,6 @@ const PostList = ({ posts, title, remove } : any) => {
           </CSSTransition>
         )}
       </TransitionGroup>
-
     </div>
   );
 };

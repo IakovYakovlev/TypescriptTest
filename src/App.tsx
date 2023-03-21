@@ -1,11 +1,10 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState } from 'react';
 import PostFilter from './Component/PostFilter';
 import PostForm from './Component/PostForm';
 import PostList from './Component/PostList';
 import MyButton from './Component/UI/button/MyButton';
-import MyInput from './Component/UI/input/MyInput';
 import MyModal from './Component/UI/MyModal/MyModal';
-import MySelect from './Component/UI/select/MySelect';
+import { usePosts } from './hooks/usePosts';
 import './styles/App.css';
 
 function App() {
@@ -17,20 +16,7 @@ function App() {
 
   const [filter, setFilter] = useState({ sort: '', query: ''})
   const [modal, setModal] = useState(false);
-
-
-  const sortedPosts = useMemo(() => {
-    console.log('ОТРАБОТАЛА ФУНКЦИЯ СОРТЕД ПОСТОВ')
-    if(filter.sort) {
-      return [...posts].sort((a: any, b: any) => a[filter.sort].localeCompare(b[filter.sort]));
-    } else {
-      return posts;
-    }
-  }, [filter.sort, posts]);
-
-  const sortedAndSearctedPosts = useMemo(() => {
-    return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.query));
-  }, [filter.query, sortedPosts]);
+  const sortedAndSearctedPosts = usePosts(posts, filter.sort, filter.query);
 
   const createPost = (newPost: any) => {
     setPosts([...posts, newPost]);
