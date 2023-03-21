@@ -5,6 +5,7 @@ import PostFilter from './Component/PostFilter';
 import PostForm from './Component/PostForm';
 import PostList from './Component/PostList';
 import MyButton from './Component/UI/button/MyButton';
+import Loader from './Component/UI/Loader/Loader';
 import MyModal from './Component/UI/MyModal/MyModal';
 import { usePosts } from './hooks/usePosts';
 import './styles/App.css';
@@ -21,6 +22,7 @@ function App() {
   const [filter, setFilter] = useState({ sort: '', query: ''})
   const [modal, setModal] = useState(false);
   const sortedAndSearctedPosts = usePosts(posts, filter.sort, filter.query);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
 
   // Если нет зависимостей, тогда отрабатывает только 1 раз.
   useEffect(() => {
@@ -28,8 +30,12 @@ function App() {
   }, []);
 
   async function fetchPosts() {
-    const posts = await PostService.getAll();
-    setPosts(posts);
+    setIsPostsLoading(true);
+    setTimeout(async () => {
+      const posts = await PostService.getAll();
+      setPosts(posts);
+      setIsPostsLoading(false);
+    }, 1000);
   }
 
   const createPost = (newPost: any) => {
@@ -55,7 +61,11 @@ function App() {
         filter={filter}
         setFilter={setFilter}
       />
-      <PostList remove={removePost} posts={sortedAndSearctedPosts} title='Посты про JS' />
+      {isPostsLoading
+        ? <div style={{display: 'flex', justifyContent: 'center', marginTop: 50}}><Loader /></div>
+        : <PostList remove={removePost} posts={sortedAndSearctedPosts} title='Посты про JS' />
+      }
+      
     </div>
   );
 };
