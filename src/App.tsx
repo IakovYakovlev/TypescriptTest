@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PostFilter from './Component/PostFilter';
 import PostForm from './Component/PostForm';
 import PostList from './Component/PostList';
@@ -20,6 +20,11 @@ function App() {
   const [filter, setFilter] = useState({ sort: '', query: ''})
   const [modal, setModal] = useState(false);
   const sortedAndSearctedPosts = usePosts(posts, filter.sort, filter.query);
+
+  // Если нет зависимостей, тогда отрабатывает только 1 раз.
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   async function fetchPosts() {
     const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
