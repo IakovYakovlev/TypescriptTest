@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState } from 'react';
 import PostFilter from './Component/PostFilter';
 import PostForm from './Component/PostForm';
@@ -7,16 +8,23 @@ import MyModal from './Component/UI/MyModal/MyModal';
 import { usePosts } from './hooks/usePosts';
 import './styles/App.css';
 
+interface ITest {
+  userId: number, 
+  id: number, 
+  title: string, 
+  body: string
+}
 function App() {
-  const [posts, setPosts] = useState([
-    {id: 1, title: 'aa', body: 'ff'},
-    {id: 2, title: 'ss 1', body: 'gg'},
-    {id: 3, title: 'bb 2', body: 'hh'},
-  ])
+  const [posts, setPosts] = useState<ITest[]>([])
 
   const [filter, setFilter] = useState({ sort: '', query: ''})
   const [modal, setModal] = useState(false);
   const sortedAndSearctedPosts = usePosts(posts, filter.sort, filter.query);
+
+  async function fetchPosts() {
+    const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
+    setPosts(response.data);
+  }
 
   const createPost = (newPost: any) => {
     setPosts([...posts, newPost]);
@@ -30,6 +38,7 @@ function App() {
 
   return(
     <div className="App">
+      <button onClick={fetchPosts}>GET POSTS</button>
       <MyButton style={{marginTop: 30}} onClick={() => setModal(true)}>Создать пользователя</MyButton>
       <MyModal visible={modal} setVisible={setModal}>
         <PostForm create={createPost}/>
