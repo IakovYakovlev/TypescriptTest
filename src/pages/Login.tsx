@@ -8,6 +8,7 @@ const Ligin = () => {
 	const login = (event: any) => {
 		event.preventDefault();
 		setIsAuth(true);
+		localStorage.setItem('auth', 'true');
 	}
 
 	return (
