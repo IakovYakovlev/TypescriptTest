@@ -7,6 +7,7 @@ import MyButton from '../Component/UI/button/MyButton';
 import Loader from '../Component/UI/Loader/Loader';
 import MyModal from '../Component/UI/MyModal/MyModal';
 import { useFetching } from '../hooks/useFetching';
+import { useObserver } from '../hooks/useObserver';
 import { usePosts } from '../hooks/usePosts';
 import '../styles/App.css';
 import { getPageCount, getPagesArray } from '../utils/pages';
@@ -27,8 +28,6 @@ function Posts() {
   const [page, setPage] = useState(1);
   const sortedAndSearctedPosts = usePosts(posts, filter.sort, filter.query);
   const lastElement = useRef();
-  const observer = useRef();
-  console.log(lastElement);
 
   let pagesArray = getPagesArray(totalPages);
 
@@ -41,18 +40,9 @@ function Posts() {
     setTotalPages(getPageCount(totalCount, limit));
   });
 
-  useEffect(() => {
-    if(isPostsLoading) return;
-    if(observer.current) observer.current.disconnect();
-    var callback = function(entries: any, observer: any) {
-      if(entries[0].isIntersecting && page < totalPages) {
-        console.log(page);
-        setPage(page + 1);
-      }
-    };
-    observer.current = new IntersectionObserver(callback);
-    observer.current.observe(lastElement.current);
-  }, [isPostsLoading])
+  useObserver(lastElement, page < totalPages, isPostsLoading, () => {
+    setPage(page+1);
+  })
 
   // Если нет зависимостей, тогда отрабатывает только 1 раз.
   useEffect(() => {
